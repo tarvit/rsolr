@@ -228,7 +228,7 @@ class RSolr::Client
     raise "The response does not have the correct keys => :body, :headers, :status" unless
       %W(body headers status) == response.keys.map{|k|k.to_s}.sort
     raise RSolr::Error::Http.new request, response unless [200,302].include? response[:status]
-    result = request[:params][:wt] == :ruby ? evaluate_ruby_response(request, response) : response[:body]
+    result = [:ruby, :spo].include?(request[:params][:wt]) ? evaluate_ruby_response(request, response) : response[:body]
     result.extend Context
     result.request, result.response = request, response
     result.is_a?(Hash) ? result.extend(RSolr::Response) : result
